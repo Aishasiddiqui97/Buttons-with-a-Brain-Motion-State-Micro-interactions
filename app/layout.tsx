@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BrainButton — Motion & State Micro-interactions",
+  title: "AI Chat Studio — Buttons with a Brain",
   description:
-    "FE-AA1: a reusable animated button for AI interfaces with idle, hover, loading, success, error and disabled states.",
+    "FE-AA1 + FE-09: an animated BrainButton, a streaming AI chat interface, and a production testing setup with Vitest, React Testing Library and Playwright.",
 };
 
 export default function RootLayout({

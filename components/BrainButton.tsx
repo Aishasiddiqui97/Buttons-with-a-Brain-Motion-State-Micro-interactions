@@ -8,7 +8,6 @@ import {
   useRef,
   useState,
   type ButtonHTMLAttributes,
-  type MouseEvent,
   type ReactNode,
 } from "react";
 import {
@@ -98,7 +97,6 @@ export interface BrainButtonProps
 const HOVER_LIFT: Transition = { duration: 0.2, ease: "easeOut" };
 const TAP_SCALE: Transition = { duration: 0.12, ease: "easeOut" };
 const SWAP_IN: Transition = { duration: 0.3, ease: "easeInOut" };
-const SWAP_OUT: Transition = { duration: 0.2, ease: "easeInOut" };
 const POP: Transition = { type: "spring", duration: 0.4, bounce: 0.28 };
 const SHAKE: Transition = { duration: 0.4, ease: "easeInOut" };
 const ZERO: Transition = { duration: 0 };
@@ -157,7 +155,6 @@ const BrainButton = forwardRef<BrainButtonHandle, BrainButtonProps>(
     const hoverLift = reduced ? ZERO : HOVER_LIFT;
     const tapScale = reduced ? ZERO : TAP_SCALE;
     const swapIn = reduced ? ZERO : SWAP_IN;
-    const swapOut = reduced ? ZERO : SWAP_OUT;
     const pop = reduced ? ZERO : POP;
     const shake = reduced ? ZERO : SHAKE;
 
@@ -281,7 +278,7 @@ const BrainButton = forwardRef<BrainButtonHandle, BrainButtonProps>(
     const isDisabled = disabled || isBusy || status === "success";
     const s = SIZE[size];
 
-    const handleClick = (_event: MouseEvent<HTMLButtonElement>) => {
+    const handleClick = () => {
       onClickRef.current?.();
       if (busyRef.current) return;
       void runGeneration();

@@ -9,3 +9,11 @@ next-env.d.ts
 npm-debug.log*
 .env*
 .vercel
+
+# Testing artifacts
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.eslintcache
+

@@ -1,12 +1,15 @@
 # BrainButton — Buttons with a Brain
 
-**FE-AA1 · Frontend AI Engineering — Motion & State Micro-interactions**
+**FE-AA1 · Frontend AI Engineering — Motion & State Micro-interactions** + **FE-09 — Testing**
 
-A production-quality, reusable animated button for AI interfaces. One button,
-six states, zero jank — designed to be dropped into any Next.js + TypeScript
-project.
+Two assignments in one repo: a production-quality, reusable animated button
+for AI interfaces (FE-AA1) and a streaming AI chat app with a professional
+testing setup — Vitest, React Testing Library and Playwright (FE-09).
 
-![States](https://img.shields.io/badge/states-6-8b5cf6) ![Stack](https://img.shields.io/badge/Next.js%2015-TypeScript-blue) ![Motion](https://img.shields.io/badge/Framer%20Motion-12-ea580c) ![Icons](https://img.shields.io/badge/lucide--react-latest-94a3b8)
+![States](https://img.shields.io/badge/states-6-8b5cf6) ![Stack](https://img.shields.io/badge/Next.js%2015-TypeScript-blue) ![Motion](https://img.shields.io/badge/Framer%20Motion-12-ea580c) ![Tests](https://img.shields.io/badge/tests-38%20unit%20+%201%20e2e-22c55e) ![Coverage](https://img.shields.io/badge/coverage-100%25-16a34a)
+
+- **`/`** — AI Chat Studio (FE-09): streaming assistant replies, validated prompt form, markdown rendering, tool result cards.
+- **`/brain-button`** — the BrainButton micro-interactions demo (FE-AA1).
 
 ---
 
@@ -33,7 +36,8 @@ An **“AI Generate”** button that walks a real async lifecycle:
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
+npm run dev      # http://localhost:3000  (AI Chat Studio)
+                 # /brain-button          (motion demo)
 ```
 
 Other scripts:
@@ -41,6 +45,7 @@ Other scripts:
 ```bash
 npm run build      # production build
 npm run typecheck  # tsc --noEmit
+npm run lint       # ESLint (flat config)
 ```
 
 ---
@@ -234,16 +239,124 @@ Why:
 
 ```
 ├── app/
-│   ├── globals.css          # Tailwind + reduced-motion spinner override
-│   ├── layout.tsx           # Root layout & metadata
-│   └── page.tsx             # Demo page
+│   ├── api/chat/route.ts    # Streaming AI endpoint (mocked in tests)
+│   ├── brain-button/        # FE-AA1 motion demo
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx             # AI Chat Studio (FE-09)
 ├── components/
-│   └── BrainButton.tsx      # The reusable component (all 6 states)
-├── next.config.mjs
-├── postcss.config.mjs
-├── tailwind.config.ts
-└── tsconfig.json
+│   ├── chat/
+│   │   ├── ChatApp.tsx              # Chat shell + streaming lifecycle
+│   │   ├── ChatInput.tsx            # Validated prompt form
+│   │   ├── ChatMessageRenderer.tsx  # Message states + markdown
+│   │   └── ToolResult.tsx           # Tool result card (4 states)
+│   └── BrainButton.tsx     # FE-AA1 reusable button
+├── lib/
+│   ├── chat.ts    # streamChat() — streaming fetch wrapper
+│   ├── cn.ts
+│   ├── id.ts
+│   └── types.ts
+├── tests/
+│   ├── components/__tests__/   # RTL component tests
+│   ├── e2e/                    # Playwright tests
+│   └── lib/                    # streamChat unit tests
+├── test/setup.ts               # Vitest setup (jest-dom, polyfills)
+├── .github/workflows/test.yml  # CI pipeline
+├── vitest.config.ts
+├── playwright.config.ts
+└── eslint.config.mjs
 ```
+
+---
+
+## Testing (FE-09)
+
+A production testing setup: **Vitest + React Testing Library** for unit/component
+tests and **Playwright** for browser-level E2E. Coverage is **100%** on the FE-09
+app code (`components/chat/**`, `lib/**`) and enforced at **≥ 80%**.
+
+### Scripts
+
+```bash
+npm run test           # run unit + component tests once
+npm run test:watch     # watch mode
+npm run test:coverage  # run with coverage report (html in ./coverage)
+npm run test:e2e       # run Playwright tests (starts the app automatically)
+npm run test:e2e:ui    # interactive Playwright UI
+npm run lint           # ESLint
+npm run typecheck      # tsc --noEmit
+```
+
+### Install (one time)
+
+```bash
+npm install
+npx playwright install chromium   # downloads the browser used by E2E
+```
+
+> If the Playwright browser download fails because the default location has no
+> space, point it elsewhere: `PLAYWRIGHT_BROWSERS_PATH=/your/disk/folder npx playwright install chromium`.
+
+### How to run tests
+
+```bash
+npm run test            # ~38 unit/component tests
+npm run test:coverage   # 100% statement/branch/function/line coverage
+npm run test:e2e        # 1 browser test: type → Generate → reply → loading gone
+```
+
+### How to view coverage
+
+```bash
+npm run test:coverage
+# console table + ./coverage/index.html (open in a browser for the full report)
+```
+
+### What is covered
+
+| Area | Tests |
+| --- | --- |
+| `lib/chat.ts` (streamChat) | success, per-chunk streaming, `onComplete`, HTTP errors, missing body |
+| `ChatMessageRenderer` | user, assistant (pending / streaming / completed / error), tool, markdown, loading indicator, empty reply |
+| `ChatInput` (form) | validation errors, required + min length, successful submit + clear, disabled + `aria-busy` loading |
+| `ToolResult` | loading, success, empty, error + retry action, accessibility roles |
+| `ChatApp` | empty state, pending indicator, token streaming, completion, error alert, form disabled in flight |
+| `BrainButton` | idle, loading + `aria-busy`, error + retry, success → auto-idle, disabled |
+| E2E (`chat.spec.ts`) | full user flow with the `/api/chat` route mocked |
+
+### Mocking the AI API
+
+The real endpoint is **never called in tests**.
+
+- **Unit tests** mock `fetch()` (`vi.stubGlobal`) with a fake streaming
+  `Response`, or mock the `@/lib/chat` module with `vi.mock()`.
+- **E2E** intercepts the request with `page.route('**/api/chat', …)` and
+  `route.fulfill(...)` — including an artificial delay so the loading state is
+  observable.
+
+### Best practices applied
+
+- Query by role/name/label (`getByRole`, `getByLabelText`, `findByRole`) — no
+  `data-testid`, no CSS-class queries; tests survive UI refactoring.
+- Behavioral assertions via `userEvent` (real keyboard/mouse semantics) and
+  `waitFor` for async transitions.
+- `describe`/`test`/`beforeEach`/`afterEach`, `vi.fn()`, `vi.spyOn()` —
+  mocks are reset between tests.
+- Accessibility is asserted directly: buttons, textboxes, alerts, live regions
+  (`role="status"`), forms (`aria-busy`), labels and ARIA wiring.
+
+### CI (GitHub Actions)
+
+`.github/workflows/test.yml` runs on every push/PR to `main`:
+
+1. `npm ci`
+2. `npm run lint`
+3. `npm run test`
+4. `npx playwright install --with-deps chromium`
+5. `npm run test:e2e`
+6. `npm run build`
+
+The workflow fails if any step fails.
 
 ---
 
@@ -254,6 +367,10 @@ Why:
 - **Tailwind CSS 3**
 - **Framer Motion 12**
 - **lucide-react** icons
+- **react-markdown** for assistant replies
+- **Vitest 3 + React Testing Library + jsdom** (unit/component tests)
+- **Playwright** (E2E)
+- **ESLint 9** (flat config) · **GitHub Actions** (CI)
 
 ## License
 
