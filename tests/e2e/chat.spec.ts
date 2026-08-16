@@ -11,7 +11,7 @@ test("user can generate an AI reply end to end", async ({ page }) => {
     });
   });
 
-  await page.goto("/");
+  await page.goto("/ai-chat-studio");
 
   // 1. Type a prompt.
   const input = page.getByRole("textbox", { name: "Prompt" });

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:model": "node scripts/build-model.mjs",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -16,12 +17,15 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.7.0",
     "framer-motion": "^12.4.7",
     "lucide-react": "^0.525.0",
     "next": "^15.4.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-markdown": "^9.0.1"
+    "react-markdown": "^9.0.1",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
@@ -34,6 +38,7 @@
     "@types/node": "^22.15.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@types/three": "^0.185.3",
     "@vitejs/plugin-react": "^4.5.0",
     "@vitest/coverage-v8": "^3.2.4",
     "autoprefixer": "^10.4.21",

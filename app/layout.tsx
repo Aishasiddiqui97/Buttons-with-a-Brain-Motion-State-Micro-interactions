@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Chat Studio — Buttons with a Brain",
+  title: "Aisha A. Siddiqui — Frontend & Full-Stack Developer (AI-powered)",
   description:
-    "FE-AA1 + FE-09: an animated BrainButton, a streaming AI chat interface, and a production testing setup with Vitest, React Testing Library and Playwright.",
+    "Portfolio of Aisha A. Siddiqui: Frontend & Full-Stack Developer building AI-powered web apps with React, Next.js, TypeScript and AI/LLM integration. Streaming chat UIs, AI automation, 3D product experiences, and production testing.",
 };
 
 export default function RootLayout({

@@ -27,6 +27,22 @@ body {
   }
 }
 
+/* Fashion Studio — loading ring (shown while the lazy Canvas bundle + GLB load).
+   Spins by default, stops entirely for reduced-motion users. */
+.fashion-loading-ring {
+  animation: fashion-spin 1.1s linear infinite;
+}
+@keyframes fashion-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fashion-loading-ring {
+    animation: none;
+  }
+}
+
 /* Minimal typographic styles for the markdown-rendered assistant replies. */
 .markdown > * + * {
   margin-top: 0.5em;
