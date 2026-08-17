@@ -11,6 +11,7 @@ import {
   Mail,
   Workflow,
 } from "lucide-react";
+import ContactForm from "@/components/ContactForm";
 
 // ───────────────────────────────────────────────────────────────────────────
 // Contact details — replace with your real email and LinkedIn before deploying.
@@ -372,7 +373,7 @@ export default function HomePage() {
       <section
         id="contact"
         aria-label="Contact"
-        className="mt-16 scroll-mt-6 rounded-3xl border border-violet-500/20 bg-gradient-to-b from-violet-950/40 to-transparent p-8 text-center sm:p-12"
+        className="mt-16 scroll-mt-6 rounded-3xl border border-violet-500/20 bg-gradient-to-b from-violet-950/40 to-transparent p-8 sm:p-12"
       >
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Let&apos;s work together
@@ -382,13 +383,16 @@ export default function HomePage() {
           roles — including remote internships and junior positions. If you
           have a project, a role, or an idea, I&apos;d love to hear from you.
         </p>
+        <div className="mt-6 max-w-lg mx-auto">
+          <ContactForm />
+        </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=Let%27s%20work%20together`}
-            className={`inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition-transform hover:-translate-y-0.5 ${FOCUS_RING}`}
+            className={`inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-medium text-slate-200 transition-colors hover:bg-white/10 ${FOCUS_RING}`}
           >
             <Mail className="h-4 w-4" aria-hidden="true" />
-            Email me
+            Or email me directly
           </a>
           <a
             href={GITHUB_URL}
